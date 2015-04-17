@@ -30,21 +30,27 @@ public class Translate {
   private static Tree.Exp CONST(int value) {
     return new Tree.CONST(value);
   }
+  
   private static Tree.Exp NAME(Label label) {
     return new Tree.NAME(label);
   }
+  
   private static Tree.Exp TEMP(Temp temp) {
     return new Tree.TEMP(temp);
   }
+  
   private static Tree.Exp BINOP(int binop, Tree.Exp left, Tree.Exp right) {
     return new Tree.BINOP(binop, left, right);
   }
+  
   private static Tree.Exp MEM(Tree.Exp exp) {
     return new Tree.MEM(exp);
   }
+  
   private static Tree.Exp CALL(Tree.Exp func, Tree.ExpList args) {
     return new Tree.CALL(func, args);
   }
+  
   private static Tree.Exp ESEQ(Tree.Stm stm, Tree.Exp exp) {
     if (stm == null)
       return exp;
@@ -92,7 +98,14 @@ public class Translate {
   }
 
   public Exp SimpleVar(Access access, Level level) {
-    return Error();
+	  Tree.Exp fp =  TEMP(level.frame.FP()); 
+	  
+	  while(level != access.home){
+		  fp = level.frame.formals.head.exp(fp);
+		  level = level.parent; 
+	  }
+	  
+	  return new Ex(access.acc.exp(fp)); 
   }
 
   public Exp FieldVar(Exp record, int index) {
@@ -112,6 +125,7 @@ public class Translate {
   }
 
   private java.util.Hashtable strings = new java.util.Hashtable();
+  
   public Exp StringExp(String lit) {
     String u = lit.intern();
     Label lab = (Label)strings.get(u);

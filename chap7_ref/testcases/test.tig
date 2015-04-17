@@ -1,0 +1,5 @@
+let
+	var x = 2
+in
+	x + 2 
+end
