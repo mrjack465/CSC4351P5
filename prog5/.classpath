@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="lib" path="/Users/jack/Dev/Temp/chap7/JARs/Absyn.zip"/>
+	<classpathentry kind="lib" path="/Users/jack/Dev/Temp/chap7/JARs/ErrorMsg.zip"/>
+	<classpathentry kind="lib" path="/Users/jack/Dev/Temp/chap7/JARs/FindEscape.zip"/>
+	<classpathentry kind="lib" path="/Users/jack/Dev/Temp/chap7/JARs/Frame.zip"/>
+	<classpathentry kind="lib" path="/Users/jack/Dev/Temp/chap7/JARs/Mips.zip"/>
+	<classpathentry kind="lib" path="/Users/jack/Dev/Temp/chap7/JARs/Parse.zip"/>
+	<classpathentry kind="lib" path="/Users/jack/Dev/Temp/chap7/JARs/Semant.zip"/>
+	<classpathentry kind="lib" path="/Users/jack/Dev/Temp/chap7/JARs/Symbol.zip"/>
+	<classpathentry kind="lib" path="/Users/jack/Dev/Temp/chap7/JARs/Temp.zip"/>
+	<classpathentry kind="lib" path="/Users/jack/Dev/Temp/chap7/JARs/Types.zip"/>
+	<classpathentry kind="lib" path="/Users/jack/Dev/Temp/chap7/JARs/Util.zip"/>
+	<classpathentry kind="lib" path="/Users/jack/Dev/Temp/chap7/JARs/Windows/Translate.zip"/>
+	<classpathentry kind="lib" path="/Users/jack/Dev/Temp/chap7/JARs/Windows/Tree.zip"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
