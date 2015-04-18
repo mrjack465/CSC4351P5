@@ -110,14 +110,17 @@ public class Translate {
   }
 
   public Exp FieldVar(Exp record, int index) {
+	  System.out.println("FieldVar"); 
     return Error();
   }
 
   public Exp SubscriptVar(Exp array, Exp index) {
+	  System.out.println("SubscriptVar"); 
     return Error();
   }
 
   public Exp NilExp() {
+	  System.out.println("NilExp"); 
     return Error();
   }
 
@@ -161,28 +164,30 @@ public class Translate {
   }
 
   public Exp OpExp(int op, Exp left, Exp right) {
-	  switch(op){
-		  case BINOP.PLUS:
+	  System.out.println(op); 
+	  	  switch(op){
+		  case Absyn.OpExp.PLUS:
 			  return new Ex(BINOP(op, left.unEx(), right.unEx()));
-		  case BINOP.MINUS:
+		  case Absyn.OpExp.MINUS:
 			  return new Ex(BINOP(op, left.unEx(), right.unEx()));
-		  case BINOP.MUL:
+		  case Absyn.OpExp.MUL:
 			  return new Ex(BINOP(op, left.unEx(), right.unEx()));
-		  case BINOP.DIV:
+		  case Absyn.OpExp.DIV:
 			  return new Ex(BINOP(op, left.unEx(), right.unEx()));
-//		  case BINOP.AND:
-//			  break;
-//		  case BINOP.OR:
-//			  break;
-//		  case BINOP.LSHIFT:
-//			  break;
-//		  case BINOP.RSHIFT:
-//			  break;
-//		  case BINOP.ARSHIFT:
-//			  break;
-//		  case BINOP.XOR:
-//			  break;
+		  case Absyn.OpExp.EQ:
+			  return new RelCx(CJUMP.EQ, left.unEx(), right.unEx());
+		  case Absyn.OpExp.NE:
+			  return new RelCx(CJUMP.NE, left.unEx(), right.unEx());
+		  case Absyn.OpExp.LT:
+			  return new RelCx(CJUMP.LT, left.unEx(), right.unEx());
+		  case Absyn.OpExp.LE:
+			  return new RelCx(CJUMP.LE, left.unEx(), right.unEx());
+		  case Absyn.OpExp.GT:
+			  return new RelCx(CJUMP.GT, left.unEx(), right.unEx());
+		  case Absyn.OpExp.GE:
+			  return new RelCx(CJUMP.GE, left.unEx(), right.unEx());
 		  default:
+			  System.out.println("OpExp"); 
 			  return Error();
 	  }
     //return Error();
@@ -194,6 +199,7 @@ public class Translate {
   }
 
   public Exp RecordExp(ExpList init) {
+	  System.out.println("RecordExp"); 
     return Error();
   }
 
@@ -208,30 +214,37 @@ public class Translate {
   }
 
   public Exp IfExp(Exp cc, Exp aa, Exp bb) {
+	  System.out.println("IfExp"); 
     return Error();
   }
 
   public Exp WhileExp(Exp test, Exp body, Label done) {
+	  System.out.println("WhileExp"); 
     return Error();
   }
 
   public Exp ForExp(Access i, Exp lo, Exp hi, Exp body, Label done) {
+	  System.out.println("ForExp"); 
     return Error();
   }
 
   public Exp BreakExp(Label done) {
+	  System.out.println("BreakExp"); 
     return Error();
   }
 
   public Exp LetExp(ExpList lets, Exp body) {
+	  System.out.println("LetExp"); 
     return Error();
   }
 
   public Exp ArrayExp(Exp size, Exp init) {
+	  System.out.println("ArrayExp"); 
     return Error();
   }
 
   public Exp VarDec(Access a, Exp init) {
+	  System.out.println("VarDec"); 
     return Error();
   }
 
