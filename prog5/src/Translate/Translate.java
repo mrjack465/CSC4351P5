@@ -164,7 +164,6 @@ public class Translate {
   }
 
   public Exp OpExp(int op, Exp left, Exp right) {
-	  System.out.println(op); 
 	  	  switch(op){
 		  case Absyn.OpExp.PLUS:
 			  return new Ex(BINOP(op, left.unEx(), right.unEx()));
@@ -187,7 +186,6 @@ public class Translate {
 		  case Absyn.OpExp.GE:
 			  return new RelCx(CJUMP.GE, left.unEx(), right.unEx());
 		  default:
-			  System.out.println("OpExp"); 
 			  return Error();
 	  }
     //return Error();
