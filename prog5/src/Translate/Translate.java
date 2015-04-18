@@ -109,11 +109,15 @@ public class Translate {
     return new Ex(CONST(0));
   }
 
-  public Exp SimpleVar(Access access, Level level) {
-
-	  Tree.Exp fp =  TEMP(level.frame.FP()); 
-
-	  return null;
+  public Exp SimpleVar(Access access, Level level) { 
+	  Tree.Exp fp = TEMP(access.home.frame.FP());
+	  
+	  Level l = level;
+	  while (l != access.home) {
+	     fp = level.frame.formals.head.exp(fp);
+	     l = level.parent;
+	  }
+	  return new Ex(access.acc.exp(fp));
   }
 
   public Exp FieldVar(Exp record, int index) {
@@ -174,29 +178,29 @@ public class Translate {
   }
 
   public Exp OpExp(int op, Exp left, Exp right) {
-	  	  switch(op){
-		  case Absyn.OpExp.PLUS:
-			  return new Ex(BINOP(op, left.unEx(), right.unEx()));
-		  case Absyn.OpExp.MINUS:
-			  return new Ex(BINOP(op, left.unEx(), right.unEx()));
-		  case Absyn.OpExp.MUL:
-			  return new Ex(BINOP(op, left.unEx(), right.unEx()));
-		  case Absyn.OpExp.DIV:
-			  return new Ex(BINOP(op, left.unEx(), right.unEx()));
-		  case Absyn.OpExp.EQ:
-			  return new RelCx(CJUMP.EQ, left.unEx(), right.unEx());
-		  case Absyn.OpExp.NE:
-			  return new RelCx(CJUMP.NE, left.unEx(), right.unEx());
-		  case Absyn.OpExp.LT:
-			  return new RelCx(CJUMP.LT, left.unEx(), right.unEx());
-		  case Absyn.OpExp.LE:
-			  return new RelCx(CJUMP.LE, left.unEx(), right.unEx());
-		  case Absyn.OpExp.GT:
-			  return new RelCx(CJUMP.GT, left.unEx(), right.unEx());
-		  case Absyn.OpExp.GE:
-			  return new RelCx(CJUMP.GE, left.unEx(), right.unEx());
-		  default:
-			  return Error();
+  	  switch(op){
+	  case Absyn.OpExp.PLUS:
+		  return new Ex(BINOP(op, left.unEx(), right.unEx()));
+	  case Absyn.OpExp.MINUS:
+		  return new Ex(BINOP(op, left.unEx(), right.unEx()));
+	  case Absyn.OpExp.MUL:
+		  return new Ex(BINOP(op, left.unEx(), right.unEx()));
+	  case Absyn.OpExp.DIV:
+		  return new Ex(BINOP(op, left.unEx(), right.unEx()));
+	  case Absyn.OpExp.EQ:
+		  return new RelCx(CJUMP.EQ, left.unEx(), right.unEx());
+	  case Absyn.OpExp.NE:
+		  return new RelCx(CJUMP.NE, left.unEx(), right.unEx());
+	  case Absyn.OpExp.LT:
+		  return new RelCx(CJUMP.LT, left.unEx(), right.unEx());
+	  case Absyn.OpExp.LE:
+		  return new RelCx(CJUMP.LE, left.unEx(), right.unEx());
+	  case Absyn.OpExp.GT:
+		  return new RelCx(CJUMP.GT, left.unEx(), right.unEx());
+	  case Absyn.OpExp.GE:
+		  return new RelCx(CJUMP.GE, left.unEx(), right.unEx());
+	  default:
+		  return Error();
 	  }
   }
 
@@ -236,11 +240,15 @@ public class Translate {
 	  if(e == null){
 		  return NilExp();
 	  }
+	  if(e.head == null){
+		  return NilExp();
+	  }
 	  if(e.tail == null){ 
 		  return new Ex(e.head.unEx());
 	  }
 	  return new Ex(ESEQ(e.head.unNx(), SeqExp(e.tail).unEx()));
   }
+  
 
   public Exp AssignExp(Exp lhs, Exp rhs) {
 	  System.out.println("Assign"); 
@@ -263,16 +271,30 @@ public class Translate {
   }
 
   public Exp BreakExp(Label done) {
-	  System.out.println("BreakExp"); 
-    return Error();
+	  return new Nx(JUMP(done));
   }
 
   public Exp LetExp(ExpList lets, Exp body) {
-	  if(lets == null){
-		  return NilExp();
-	  }
-	  return new Ex(ESEQ(SeqExp(lets).unNx(), body.unEx()));
+	  if(body instanceof Nx && lets == null)
+		  return NilExp(); 
+	  if(lets == null)
+		  return new Ex(body.unEx());
+	  Tree.Stm dList = decList(lets);
+	  if(body instanceof Nx)
+		  return new Nx(dList); 
+	  return new Ex(ESEQ(dList, body.unEx()));
   }
+  
+  private Tree.Stm decList(ExpList l){
+	  if(l.head == null){
+		  return null;
+	  }
+	  if(l.tail == null){
+		  return l.head.unNx(); 
+	  }
+	  return SEQ(l.head.unNx(), decList(l.tail));
+  }
+
 
   public Exp ArrayExp(Exp size, Exp init) {
 	  System.out.println("ArrayExp"); 
@@ -280,7 +302,9 @@ public class Translate {
   }
 
   public Exp VarDec(Access a, Exp init) {
-	   return null;
+	  Tree.Exp fp = TEMP(a.home.frame.FP());
+	  
+	  return new Nx(MOVE(a.acc.exp(fp), init.unEx()));
   }
 
   public Exp TypeDec() {
