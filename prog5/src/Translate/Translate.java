@@ -270,8 +270,7 @@ public class Translate {
   
 
   public Exp AssignExp(Exp lhs, Exp rhs) {
-	  System.out.println("Assign"); 
-    return Error();
+    return new Nx(MOVE(lhs.unEx(), rhs.unEx()));
   }
 
   public Exp IfExp(Exp cc, Exp aa, Exp bb) {
@@ -280,8 +279,21 @@ public class Translate {
   }
 
   public Exp WhileExp(Exp test, Exp body, Label done) {
-	  System.out.println("WhileExp"); 
-    return Error();
+	  Label l0 = done; 
+	  Label l1 = new Label();
+	  Label l2 = new Label();
+	  return new Nx(SEQ(
+			  			SEQ(
+		  					SEQ(
+	  							LABEL(l1), 
+	  							test.unCx(l2, l0)), 
+  							SEQ(
+								SEQ(
+									LABEL(l2), 
+									body.unNx()), 
+								JUMP(l1))),
+						LABEL(l0)));
+
   }
 
   public Exp ForExp(Access i, Exp lo, Exp hi, Exp body, Label done) {
@@ -294,17 +306,20 @@ public class Translate {
   }
 
   public Exp LetExp(ExpList lets, Exp body) {
-	  if(body instanceof Nx && lets == null)
-		  return NilExp(); 
-	  if(lets == null)
-		  return new Ex(body.unEx());
-	  Tree.Stm dList = decList(lets);
-	  if(body instanceof Nx)
-		  return new Nx(dList); 
-	  return new Ex(ESEQ(dList, body.unEx()));
+	  if(lets == null && body == null){
+		  return NilExp();
+	  }
+	  Tree.Exp b = body.unEx();
+	  if( b == null){
+		  return new Nx(SEQ(decList(lets), body.unNx()));
+	  }
+	  return new Ex(ESEQ(decList(lets), body.unEx()));
   }
   
   private Tree.Stm decList(ExpList l){
+	  if(l == null){
+		  return NilExp().unNx();
+	  }
 	  if(l.head == null){
 		  return null;
 	  }
