@@ -8,7 +8,7 @@ public class Main {
   public static void main(String argv[])  {
     for (int i = 0; i < argv.length; ++i) {
       //String filename = argv[i];
-    	String filename = "/Users/jack/git/CSC4351P5/prog5/src/testcases/test3.tig";
+    	String filename = "/Users/jack/git/CSC4351P5/chap7_ref/testcases/test.tig";
       if (argv.length > 1)
 	System.out.println("***Processing: " + filename);
       Parse parse = new Parse(filename);

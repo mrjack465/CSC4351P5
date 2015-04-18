@@ -94,6 +94,7 @@ public class Translate {
   }
 
   public Exp Error() {
+	System.out.println("Error"); 
     return new Ex(CONST(0));
   }
 
@@ -121,7 +122,7 @@ public class Translate {
   }
 
   public Exp IntExp(int value) {
-    return Error();
+    return new Ex(CONST(value));
   }
 
   private java.util.Hashtable strings = new java.util.Hashtable();
@@ -160,10 +161,35 @@ public class Translate {
   }
 
   public Exp OpExp(int op, Exp left, Exp right) {
-    return Error();
+	  switch(op){
+		  case BINOP.PLUS:
+			  return new Ex(BINOP(op, left.unEx(), right.unEx()));
+		  case BINOP.MINUS:
+			  return new Ex(BINOP(op, left.unEx(), right.unEx()));
+		  case BINOP.MUL:
+			  return new Ex(BINOP(op, left.unEx(), right.unEx()));
+		  case BINOP.DIV:
+			  return new Ex(BINOP(op, left.unEx(), right.unEx()));
+//		  case BINOP.AND:
+//			  return new RexCx()
+//		  case BINOP.OR:
+//			  break;
+//		  case BINOP.LSHIFT:
+//			  break;
+//		  case BINOP.RSHIFT:
+//			  break;
+//		  case BINOP.ARSHIFT:
+//			  break;
+//		  case BINOP.XOR:
+//			  break;
+		  default:
+			  return Error();
+	  }
+    //return Error();
   }
 
   public Exp StrOpExp(int op, Exp left, Exp right) {
+	  System.out.println("StrOpExp"); 
     return Error();
   }
 
@@ -172,10 +198,12 @@ public class Translate {
   }
 
   public Exp SeqExp(ExpList e) {
+	  System.out.println("SeqExp"); 
     return Error();
   }
 
   public Exp AssignExp(Exp lhs, Exp rhs) {
+	  System.out.println("Assign"); 
     return Error();
   }
 
