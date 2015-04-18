@@ -188,12 +188,33 @@ public class Translate {
 		  default:
 			  return Error();
 	  }
-    //return Error();
   }
 
   public Exp StrOpExp(int op, Exp left, Exp right) {
-	  System.out.println("StrOpExp"); 
-    return Error();
+  	  switch(op){
+	  case Absyn.OpExp.PLUS:
+		  return new Ex(BINOP(op, left.unEx(), right.unEx()));
+	  case Absyn.OpExp.MINUS:
+		  return new Ex(BINOP(op, left.unEx(), right.unEx()));
+	  case Absyn.OpExp.MUL:
+		  return new Ex(BINOP(op, left.unEx(), right.unEx()));
+	  case Absyn.OpExp.DIV:
+		  return new Ex(BINOP(op, left.unEx(), right.unEx()));
+	  case Absyn.OpExp.EQ:
+		  return new RelCx(CJUMP.EQ, left.unEx(), right.unEx());
+	  case Absyn.OpExp.NE:
+		  return new RelCx(CJUMP.NE, left.unEx(), right.unEx());
+	  case Absyn.OpExp.LT:
+		  return new RelCx(CJUMP.LT, left.unEx(), right.unEx());
+	  case Absyn.OpExp.LE:
+		  return new RelCx(CJUMP.LE, left.unEx(), right.unEx());
+	  case Absyn.OpExp.GT:
+		  return new RelCx(CJUMP.GT, left.unEx(), right.unEx());
+	  case Absyn.OpExp.GE:
+		  return new RelCx(CJUMP.GE, left.unEx(), right.unEx());
+	  default:
+		  return Error();
+  	  }
   }
 
   public Exp RecordExp(ExpList init) {
