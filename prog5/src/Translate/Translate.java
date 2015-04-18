@@ -171,7 +171,7 @@ public class Translate {
 		  case BINOP.DIV:
 			  return new Ex(BINOP(op, left.unEx(), right.unEx()));
 //		  case BINOP.AND:
-//			  return new RexCx()
+//			  break;
 //		  case BINOP.OR:
 //			  break;
 //		  case BINOP.LSHIFT:
