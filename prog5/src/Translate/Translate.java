@@ -113,12 +113,7 @@ public class Translate {
 
 	  Tree.Exp fp =  TEMP(level.frame.FP()); 
 
-	  while(level != access.home){
-		  fp = level.frame.formals.head.exp(fp);
-		  level = level.parent; 
-	  }
-	  
-	  return new Ex(access.acc.exp(fp)); 
+	  return null;
   }
 
   public Exp FieldVar(Exp record, int index) {
@@ -285,7 +280,7 @@ public class Translate {
   }
 
   public Exp VarDec(Access a, Exp init) {
-	  return Error(); 
+	   return null;
   }
 
   public Exp TypeDec() {
