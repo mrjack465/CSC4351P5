@@ -126,8 +126,27 @@ public class Translate {
   }
 
   public Exp SubscriptVar(Exp array, Exp index) {
-	  System.out.println("SubscriptVar"); 
-    return Error();
+	  Temp t3 = new Temp();
+	  Temp t4 = new Temp();
+	  Label badSub = frame.badSub();
+	  Label l0 = new Label();
+	  Label l1 = new Label();
+	  int wSize = frame.wordSize();
+	  return new Ex(ESEQ(
+	    				SEQ(
+    						MOVE(TEMP(t3), array.unEx()), 
+    						SEQ(
+    								MOVE(TEMP(t4), index.unEx()), 
+    								SEQ(
+    										CJUMP(2, TEMP(t4), CONST(0), badSub, l0), 
+    										SEQ(
+    												LABEL(l0), 
+    												SEQ(
+    														CJUMP(3, TEMP(t4), MEM(BINOP(0, TEMP(t3), CONST(-wSize))), badSub, l1), 
+    														LABEL(l1)))))), 
+						MEM(
+								BINOP(Absyn.OpExp.PLUS, TEMP(t3), 
+										BINOP(Absyn.OpExp.MUL, TEMP(t4), CONST(wSize))))));
   }
 
   public Exp NilExp() {
@@ -297,13 +316,12 @@ public class Translate {
 
 
   public Exp ArrayExp(Exp size, Exp init) {
-	  System.out.println("ArrayExp"); 
-    return Error();
+	  // makes call to something
+	  return new Ex(frame.externalCall("initArray", ExpList(size.unEx(), ExpList(init.unEx()))));  
   }
 
   public Exp VarDec(Access a, Exp init) {
 	  Tree.Exp fp = TEMP(a.home.frame.FP());
-	  
 	  return new Nx(MOVE(a.acc.exp(fp), init.unEx()));
   }
 
