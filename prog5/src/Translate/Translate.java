@@ -103,12 +103,31 @@ public class Translate {
       return null;
     return ExpList(exp.head.unEx(), ExpList(exp.tail));
   }
+  
+  private Tree.Exp CallExp(Symbol f, ExpList args, Level from) {
+	    return frame.externalCall(f.toString(), ExpList(args));
+	  }
+	  
+  private Tree.Exp CallExp(Level f, ExpList args, Level from) {
+	    throw new Error("Translate.CallExp unimplemented");
+	  }
+
+  // ==================================================================================================
+  // ==================================================================================================  
+  // ==================================================================================================
+  // ==================================================================================================
+  // ==================================================================================================
+
+  private java.util.Hashtable strings = new java.util.Hashtable();
+
+  // DONE --------------------------------------------------------------------------------
+  // -------------------------------------------------------------------------------------
 
   public Exp Error() {
 	System.out.println("Error"); 
     return new Ex(CONST(0));
   }
-
+  
   public Exp SimpleVar(Access access, Level level) {
 
 	  Tree.Exp fp =  TEMP(level.frame.FP()); 
@@ -116,47 +135,64 @@ public class Translate {
 	  return null;
   }
 
-  public Exp FieldVar(Exp record, int index) {
-	  System.out.println("FieldVar"); 
-    return Error();
+  public Exp SeqExp(ExpList e) {
+	  if(e == null){
+		  return NilExp();
+	  }
+	  if(e.tail == null){ 
+		  return new Ex(e.head.unEx());
+	  }
+	  return new Ex(ESEQ(e.head.unNx(), SeqExp(e.tail).unEx()));
   }
-
-  public Exp SubscriptVar(Exp array, Exp index) {
-	  System.out.println("SubscriptVar"); 
-    return Error();
+  
+  public Exp OpExp(int op, Exp left, Exp right) {
+  	  switch(op){
+	  case Absyn.OpExp.PLUS:
+		  return new Ex(BINOP(op, left.unEx(), right.unEx()));
+	  case Absyn.OpExp.MINUS:
+		  return new Ex(BINOP(op, left.unEx(), right.unEx()));
+	  case Absyn.OpExp.MUL:
+		  return new Ex(BINOP(op, left.unEx(), right.unEx()));
+	  case Absyn.OpExp.DIV:
+		  return new Ex(BINOP(op, left.unEx(), right.unEx()));
+	  case Absyn.OpExp.EQ:
+		  return new RelCx(CJUMP.EQ, left.unEx(), right.unEx());
+	  case Absyn.OpExp.NE:
+		  return new RelCx(CJUMP.NE, left.unEx(), right.unEx());
+	  case Absyn.OpExp.LT:
+		  return new RelCx(CJUMP.LT, left.unEx(), right.unEx());
+	  case Absyn.OpExp.LE:
+		  return new RelCx(CJUMP.LE, left.unEx(), right.unEx());
+	  case Absyn.OpExp.GT:
+		  return new RelCx(CJUMP.GT, left.unEx(), right.unEx());
+	  case Absyn.OpExp.GE:
+		  return new RelCx(CJUMP.GE, left.unEx(), right.unEx());
+	  default:
+		  return Error();
   }
-
+}
+  
+  public Exp StringExp(String lit) {
+	    String u = lit.intern();
+	    Label lab = (Label)strings.get(u);
+	    if (lab == null) {
+	      lab = new Label();
+	      strings.put(u, lab);
+	      DataFrag frag = new DataFrag(frame.string(lab, u));
+	      frag.next = frags;
+	      frags = frag;
+	    }
+	    return new Ex(NAME(lab));
+	  }
+  
   public Exp NilExp() {
 	  return new Nx(null);
   }
-
+  
   public Exp IntExp(int value) {
     return new Ex(CONST(value));
   }
-
-  private java.util.Hashtable strings = new java.util.Hashtable();
   
-  public Exp StringExp(String lit) {
-    String u = lit.intern();
-    Label lab = (Label)strings.get(u);
-    if (lab == null) {
-      lab = new Label();
-      strings.put(u, lab);
-      DataFrag frag = new DataFrag(frame.string(lab, u));
-      frag.next = frags;
-      frags = frag;
-    }
-    return new Ex(NAME(lab));
-  }
-
-  private Tree.Exp CallExp(Symbol f, ExpList args, Level from) {
-    return frame.externalCall(f.toString(), ExpList(args));
-  }
-  
-  private Tree.Exp CallExp(Level f, ExpList args, Level from) {
-    throw new Error("Translate.CallExp unimplemented");
-  }
-
   public Exp FunExp(Symbol f, ExpList args, Level from) {
     return new Ex(CallExp(f, args, from));
   }
@@ -164,42 +200,7 @@ public class Translate {
   public Exp FunExp(Level f, ExpList args, Level from) {
     return new Ex(CallExp(f, args, from));
   }
-  
-  public Exp ProcExp(Symbol f, ExpList args, Level from) {
-    return new Nx(UEXP(CallExp(f, args, from)));
-  }
-  
-  public Exp ProcExp(Level f, ExpList args, Level from) {
-    return new Nx(UEXP(CallExp(f, args, from)));
-  }
-
-  public Exp OpExp(int op, Exp left, Exp right) {
-	  	  switch(op){
-		  case Absyn.OpExp.PLUS:
-			  return new Ex(BINOP(op, left.unEx(), right.unEx()));
-		  case Absyn.OpExp.MINUS:
-			  return new Ex(BINOP(op, left.unEx(), right.unEx()));
-		  case Absyn.OpExp.MUL:
-			  return new Ex(BINOP(op, left.unEx(), right.unEx()));
-		  case Absyn.OpExp.DIV:
-			  return new Ex(BINOP(op, left.unEx(), right.unEx()));
-		  case Absyn.OpExp.EQ:
-			  return new RelCx(CJUMP.EQ, left.unEx(), right.unEx());
-		  case Absyn.OpExp.NE:
-			  return new RelCx(CJUMP.NE, left.unEx(), right.unEx());
-		  case Absyn.OpExp.LT:
-			  return new RelCx(CJUMP.LT, left.unEx(), right.unEx());
-		  case Absyn.OpExp.LE:
-			  return new RelCx(CJUMP.LE, left.unEx(), right.unEx());
-		  case Absyn.OpExp.GT:
-			  return new RelCx(CJUMP.GT, left.unEx(), right.unEx());
-		  case Absyn.OpExp.GE:
-			  return new RelCx(CJUMP.GE, left.unEx(), right.unEx());
-		  default:
-			  return Error();
-	  }
-  }
-
+	  
   public Exp StrOpExp(int op, Exp left, Exp right) {
   	  switch(op){
 	  case Absyn.OpExp.PLUS:
@@ -226,20 +227,31 @@ public class Translate {
 		  return Error();
   	  }
   }
+  
+  public Exp ProcExp(Symbol f, ExpList args, Level from) {
+    return new Nx(UEXP(CallExp(f, args, from)));
+  }
+  
+  public Exp ProcExp(Level f, ExpList args, Level from) {
+    return new Nx(UEXP(CallExp(f, args, from)));
+  }
+  
+  // TODO --------------------------------------------------------------------------------
+  // -------------------------------------------------------------------------------------
 
-  public Exp RecordExp(ExpList init) {
-	  System.out.println("RecordExp"); 
+  public Exp FieldVar(Exp record, int index) {
+	  System.out.println("FieldVar"); 
     return Error();
   }
 
-  public Exp SeqExp(ExpList e) {
-	  if(e == null){
-		  return NilExp();
-	  }
-	  if(e.tail == null){ 
-		  return new Ex(e.head.unEx());
-	  }
-	  return new Ex(ESEQ(e.head.unNx(), SeqExp(e.tail).unEx()));
+  public Exp SubscriptVar(Exp array, Exp index) {
+	  System.out.println("SubscriptVar"); 
+    return Error();
+  }
+ 
+  public Exp RecordExp(ExpList init) {
+	  System.out.println("RecordExp"); 
+    return Error();
   }
 
   public Exp AssignExp(Exp lhs, Exp rhs) {

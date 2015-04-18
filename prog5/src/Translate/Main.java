@@ -8,9 +8,9 @@ public class Main {
   public static void main(String argv[])  {
     for (int i = 0; i < argv.length; ++i) {
       //String filename = argv[i];
-    	String filename = "/Users/jack/git/CSC4351P5/chap7_ref/testcases/test.tig";
+    	String filename = "/Users/MBP/Temp/testcases/test.tig";
       if (argv.length > 1)
-	System.out.println("***Processing: " + filename);
+	  	System.out.println("***Processing: " + filename);
       Parse parse = new Parse(filename);
       Translate translate = new Translate(frame);
       Semant semant = new Semant(translate, parse.errorMsg);
