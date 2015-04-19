@@ -331,8 +331,7 @@ public class Translate {
 	}
 
 	public Exp BreakExp(Label done) {
-		System.out.println("BreakExp"); 
-		return Error();
+		return new Nx(JUMP(done));
 	}
 
 	public Exp LetExp(ExpList lets, Exp body) {
