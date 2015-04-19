@@ -269,7 +269,6 @@ public class Translate {
 	  if (!(aa instanceof Nx))
 	  	  return new IfThenElseExp(cc, aa, bb);
 	  			  
-	  //return new IfThenElseExp(cc, aa, bb);
 	  Label l1 = new Label();
 	  Label l2 = new Label();
 	  return new Nx(
