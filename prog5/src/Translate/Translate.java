@@ -250,10 +250,29 @@ public class Translate {
   }
 
   public Exp SubscriptVar(Exp array, Exp index) {
-	  System.out.println("SubscriptVar"); 
-    return Error();
+	  Temp t3 = new Temp();
+	  Temp t4 = new Temp();
+	  Label badSub = frame.badSub();
+	  Label l0 = new Label();
+	  Label l1 = new Label();
+	  int wSize = frame.wordSize();
+	  return new Ex(ESEQ(
+	    				SEQ(
+    						MOVE(TEMP(t3), array.unEx()), 
+    						SEQ(
+    								MOVE(TEMP(t4), index.unEx()), 
+    								SEQ(
+    										CJUMP(2, TEMP(t4), CONST(0), badSub, l0), 
+    										SEQ(
+    												LABEL(l0), 
+    												SEQ(
+    														CJUMP(3, TEMP(t4), MEM(BINOP(0, TEMP(t3), CONST(-wSize))), badSub, l1), 
+    														LABEL(l1)))))), 
+						MEM(
+								BINOP(Absyn.OpExp.PLUS, TEMP(t3), 
+										BINOP(Absyn.OpExp.MUL, TEMP(t4), CONST(wSize))))));
   }
- 
+
   public Exp RecordExp(ExpList init) {
 	  System.out.println("RecordExp"); 
     return Error();
@@ -289,8 +308,21 @@ public class Translate {
   }
 
   public Exp WhileExp(Exp test, Exp body, Label done) {
-	  System.out.println("WhileExp"); 
-    return Error();
+	  Label l0 = done; 
+	  Label l1 = new Label();
+	  Label l2 = new Label();
+	  return new Nx(SEQ(
+			  			SEQ(
+		  					SEQ(
+	  							LABEL(l1), 
+	  							test.unCx(l2, l0)), 
+  							SEQ(
+								SEQ(
+									LABEL(l2), 
+									body.unNx()), 
+								JUMP(l1))),
+						LABEL(l0)));
+
   }
 
   public Exp ForExp(Access i, Exp lo, Exp hi, Exp body, Label done) {
