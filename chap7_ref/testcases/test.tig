@@ -1,1 +1,4 @@
-while 3 > 5 do (break)
+let
+var d := 0
+in
+end

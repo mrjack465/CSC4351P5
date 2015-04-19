@@ -361,7 +361,7 @@ public class Translate {
 	}
 
 	public Exp VarDec(Access a, Exp init) {
-		return null;
+		return new Nx(MOVE(a.acc.exp(TEMP(a.home.frame.FP())) ,init.unEx()));
 	}
 
 	public Exp TypeDec() {
