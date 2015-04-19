@@ -1,4 +1,7 @@
 package Translate;
+import java.io.File;
+import java.io.FileWriter;
+
 import Parse.Parse;
 import Semant.Semant;
 

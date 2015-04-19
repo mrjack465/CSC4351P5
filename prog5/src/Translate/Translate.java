@@ -136,17 +136,17 @@ public class Translate {
 	    				SEQ(
     						MOVE(TEMP(t3), array.unEx()), 
     						SEQ(
-    								MOVE(TEMP(t4), index.unEx()), 
-    								SEQ(
-    										CJUMP(2, TEMP(t4), CONST(0), badSub, l0), 
-    										SEQ(
-    												LABEL(l0), 
-    												SEQ(
-    														CJUMP(3, TEMP(t4), MEM(BINOP(0, TEMP(t3), CONST(-wSize))), badSub, l1), 
-    														LABEL(l1)))))), 
+								MOVE(TEMP(t4), index.unEx()), 
+								SEQ(
+									CJUMP(2, TEMP(t4), CONST(0), badSub, l0), 
+									SEQ(
+										LABEL(l0), 
+										SEQ(
+												CJUMP(3, TEMP(t4), MEM(BINOP(0, TEMP(t3), CONST(-wSize))), badSub, l1), 
+												LABEL(l1)))))), 
 						MEM(
-								BINOP(Absyn.OpExp.PLUS, TEMP(t3), 
-										BINOP(Absyn.OpExp.MUL, TEMP(t4), CONST(wSize))))));
+							BINOP(Absyn.OpExp.PLUS, TEMP(t3), 
+							BINOP(Absyn.OpExp.MUL, TEMP(t4), CONST(wSize))))));
   }
 
   public Exp NilExp() {
@@ -330,18 +330,17 @@ public class Translate {
 									  i.acc.exp(TEMP(low)),
 									  lo.unEx()),
 								  MOVE(TEMP(high), hi.unEx())),
-							  CJUMP(Absyn.OpExp.LE, TEMP(low), TEMP(high), block, done)),
+							  CJUMP(CJUMP.LE, i.acc.exp(TEMP(low)), TEMP(high), block, done)),
 						  SEQ(
 							  SEQ(
 								  SEQ(
 									  LABEL(block),
 									  body.unNx()),
-								  CJUMP(Absyn.OpExp.LT, i.acc.exp(TEMP(low)), TEMP(high), increment, done)),
+								  CJUMP(CJUMP.LT, i.acc.exp(TEMP(low)), TEMP(high), increment, done)),
 							  SEQ(
 								  SEQ(
 									  LABEL(increment),
-									  MOVE(TEMP(low),
-					       BINOP(Absyn.OpExp.PLUS, i.acc.exp(TEMP(low)), CONST(1)))),
+									  MOVE(i.acc.exp(TEMP(low)), BINOP(Absyn.OpExp.PLUS, i.acc.exp(TEMP(low)), CONST(1)))),
 					     JUMP(block)))),
 					  LABEL(done)));
 	}
