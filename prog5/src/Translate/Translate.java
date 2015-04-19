@@ -336,14 +336,14 @@ public class Translate {
   }
 
   public Exp LetExp(ExpList lets, Exp body) {
-	  if(body instanceof Nx && lets == null)
-		  return NilExp(); 
-	  if(lets == null)
-		  return new Ex(body.unEx());
-	  Tree.Stm dList = decList(lets);
-	  if(body instanceof Nx)
-		  return new Nx(dList); 
-	  return new Ex(ESEQ(dList, body.unEx()));
+	  if(lets == null && body == null){
+		  return NilExp();
+	  }
+	  Tree.Exp b = body.unEx();
+	  if( b == null){
+		  return new Nx(SEQ(decList(lets), body.unNx()));
+	  }
+	  return new Ex(ESEQ(decList(lets), body.unEx()));
   }
   
   private Tree.Stm decList(ExpList l){
