@@ -298,8 +298,49 @@ public class Translate {
 
   public Exp ForExp(Access i, Exp lo, Exp hi, Exp body, Label done) {
 	  System.out.println("ForExp"); 
-    return Error();
-  }
+	Temp low = new Temp();
+	Temp high = new Temp(); 
+	Label finish = done; 
+	Label block = new Label();
+	Label increment = new Label(); 
+	return new Nx(SEQ(
+					  SEQ(
+						  SEQ(
+							  SEQ(
+								  MOVE(
+									  TEMP(low),
+									  lo.unEx()),
+								  MOVE(TEMP(high), hi.unEx())),
+							  CJUMP(Absyn.OpExp.LE, TEMP(low), TEMP(high), block, done)),
+						  SEQ(
+							  SEQ(
+								  SEQ(
+									  LABEL(block),
+									  body.unNx()),
+								  CJUMP(Absyn.OpExp.LT, TEMP(low), TEMP(high), increment, done)),
+							  SEQ(
+								  SEQ(
+									  LABEL(increment),
+									  MOVE(TEMP(low),
+					       BINOP(Absyn.OpExp.PLUS, TEMP(low), CONST(1)))),
+					     JUMP(block)))),
+					  LABEL(done)));
+	}
+//    return new Nx(SEQ(
+//    			  	SEQ(
+//			  			SEQ(
+//		  					SEQ( MOVE(TEMP(low), lo.unEx()), MOVE(TEMP(high), hi.unEx())), 
+//  							CJUMP(Absyn.OpExp.LE, TEMP(low), TEMP(high), block, done)),
+//				   /* */
+//						SEQ(
+//							SEQ(
+//								SEQ(LABEL(block), body.unNx()), 
+//								CJUMP(Absyn.OpExp.LT, lo.unEx(), hi.unEx(), increment, done)),
+//							SEQ(
+//								SEQ(LABEL(increment), MOVE(TEMP(low), BINOP(0, TEMP(low), CONST(1)))),
+//								JUMP(block))), 
+//					LABEL(done));
+//  }
 
   public Exp BreakExp(Label done) {
 	  return new Nx(JUMP(done));
