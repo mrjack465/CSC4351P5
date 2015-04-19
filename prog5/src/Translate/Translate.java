@@ -317,20 +317,17 @@ public class Translate {
   }
 
   public Exp ForExp(Access i, Exp lo, Exp hi, Exp body, Label done) {
-	System.out.println("ForExp"); 
-	Temp low = new Temp();
+	Temp low = i.home.frame.FP();
 	Temp high = new Temp(); 
 	Label block = new Label();
 	Label increment = new Label(); 
-	Label test = new Label();
-
 	
 	return new Nx(SEQ(
 					  SEQ(
 						  SEQ(
 							  SEQ(
 								  MOVE(
-									  TEMP(low),
+									  i.acc.exp(TEMP(low)),
 									  lo.unEx()),
 								  MOVE(TEMP(high), hi.unEx())),
 							  CJUMP(Absyn.OpExp.LE, TEMP(low), TEMP(high), block, done)),
@@ -339,12 +336,12 @@ public class Translate {
 								  SEQ(
 									  LABEL(block),
 									  body.unNx()),
-								  CJUMP(Absyn.OpExp.LT, TEMP(low), TEMP(high), increment, done)),
+								  CJUMP(Absyn.OpExp.LT, i.acc.exp(TEMP(low)), TEMP(high), increment, done)),
 							  SEQ(
 								  SEQ(
 									  LABEL(increment),
 									  MOVE(TEMP(low),
-					       BINOP(Absyn.OpExp.PLUS, TEMP(low), CONST(1)))),
+					       BINOP(Absyn.OpExp.PLUS, i.acc.exp(TEMP(low)), CONST(1)))),
 					     JUMP(block)))),
 					  LABEL(done)));
 	}

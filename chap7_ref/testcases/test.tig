@@ -1,2 +1,7 @@
-if 1 then 2 else 3
+let
+    var n := 2
+in
+    for a := 1 to 5 do
+        n := a
+end
 
