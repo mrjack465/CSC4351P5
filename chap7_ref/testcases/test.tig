@@ -1,6 +1,7 @@
 let
     var n := 2
 in
-    for a := 1 to 5 do
-        n := a
+    while n < 2
+    do n := 2
 end
+
