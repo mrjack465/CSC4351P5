@@ -266,10 +266,27 @@ public class Translate {
 
   public Exp IfExp(Exp cc, Exp aa, Exp bb) {
 
-	  Exp result = new IfThenElseExp(cc, aa, bb);
+	  if (!(aa instanceof Nx))
+	  	  return new IfThenElseExp(cc, aa, bb);
 	  			  
-	  return result;
-	  
+	  //return new IfThenElseExp(cc, aa, bb);
+	  Label l1 = new Label();
+	  Label l2 = new Label();
+	  return new Nx(
+		  SEQ(
+			  SEQ(
+				  cc.unCx(l1,l2), 
+				  SEQ(
+				  	SEQ(
+			  			LABEL(l1), 
+			  			bb.unNx()
+		  			), 
+				  	JUMP(l2)
+			  	)
+			  ), 
+			  LABEL(l2)
+		  )
+	  );
   }
 
   public Exp WhileExp(Exp test, Exp body, Label done) {

@@ -38,10 +38,10 @@ class IfThenElseExp extends Exp {
 
   Tree.Exp unEx() {
 	  Temp temp = new Temp();
-	  Tree.Exp result = new Tree.ESEQ(
+	  return new Tree.ESEQ(
 		  new Tree.SEQ(
 			  new Tree.SEQ(
-				  new Tree.JUMP(t), 
+				  cond.unCx(t, f),
 				  new Tree.SEQ(
 					  new Tree.SEQ(
 						  new Tree.LABEL(t), 
@@ -63,8 +63,7 @@ class IfThenElseExp extends Exp {
 		  ),
 		  new Tree.TEMP(temp)
 	  );
-	  
-    return result;
+   
   }
 
   Tree.Stm unNx() {
