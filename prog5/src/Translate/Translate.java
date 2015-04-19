@@ -2,6 +2,7 @@ package Translate;
 import Symbol.Symbol;
 import Tree.BINOP;
 import Tree.CJUMP;
+import Tree.Stm;
 import Temp.Temp;
 import Temp.Label;
 
@@ -128,11 +129,15 @@ public class Translate {
     return new Ex(CONST(0));
   }
   
-  public Exp SimpleVar(Access access, Level level) {
-
-	  Tree.Exp fp =  TEMP(level.frame.FP()); 
-
-	  return null;
+  public Exp SimpleVar(Access access, Level level) { 
+	  Tree.Exp fp = TEMP(access.home.frame.FP());
+	  
+	  Level l = level;
+	  while (l != access.home) {
+	     fp = level.frame.formals.head.exp(fp);
+	     l = level.parent;
+	  }
+	  return new Ex(access.acc.exp(fp));
   }
 
   public Exp SeqExp(ExpList e) {
@@ -260,8 +265,11 @@ public class Translate {
   }
 
   public Exp IfExp(Exp cc, Exp aa, Exp bb) {
-	  System.out.println("IfExp"); 
-    return Error();
+
+	  Exp result = new IfThenElseExp(cc, aa, bb);
+	  			  
+	  return result;
+	  
   }
 
   public Exp WhileExp(Exp test, Exp body, Label done) {
@@ -280,10 +288,24 @@ public class Translate {
   }
 
   public Exp LetExp(ExpList lets, Exp body) {
-	  if(lets == null){
-		  return NilExp();
+	  if(body instanceof Nx && lets == null)
+		  return NilExp(); 
+	  if(lets == null)
+		  return new Ex(body.unEx());
+	  Tree.Stm dList = decList(lets);
+	  if(body instanceof Nx)
+		  return new Nx(dList); 
+	  return new Ex(ESEQ(dList, body.unEx()));
+  }
+  
+  private Tree.Stm decList(ExpList l){
+	  if(l.head == null){
+		  return null;
 	  }
-	  return new Ex(ESEQ(SeqExp(lets).unNx(), body.unEx()));
+	  if(l.tail == null){
+		  return l.head.unNx(); 
+	  }
+	  return SEQ(l.head.unNx(), decList(l.tail));
   }
 
   public Exp ArrayExp(Exp size, Exp init) {

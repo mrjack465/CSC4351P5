@@ -1,6 +1,9 @@
 package Translate;
 import Temp.Temp;
 import Temp.Label;
+import Tree.JUMP;
+import Tree.LABEL;
+import Tree.MOVE;
 
 class IfThenElseExp extends Exp {
   Exp cond, a, b;
@@ -34,8 +37,34 @@ class IfThenElseExp extends Exp {
   }
 
   Tree.Exp unEx() {
-    // You must implement this function
-    return new Tree.CONST(0);
+	  Temp temp = new Temp();
+	  Tree.Exp result = new Tree.ESEQ(
+		  new Tree.SEQ(
+			  new Tree.SEQ(
+				  new Tree.JUMP(t), 
+				  new Tree.SEQ(
+					  new Tree.SEQ(
+						  new Tree.LABEL(t), 
+						  new Tree.SEQ(
+							  new Tree.MOVE(new Tree.TEMP(temp), a.unEx()), 
+							  new Tree.JUMP(join)
+						  )
+					  ), 
+					  new Tree.SEQ(
+						  new Tree.LABEL(f), 
+						  new Tree.SEQ(
+							  new Tree.MOVE(new Tree.TEMP(temp), b.unEx()), 
+							  new Tree.JUMP(join)
+						  )
+					  )
+				  )
+			  ), 
+			  new Tree.LABEL(join)
+		  ),
+		  new Tree.TEMP(temp)
+	  );
+	  
+    return result;
   }
 
   Tree.Stm unNx() {
