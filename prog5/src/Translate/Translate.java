@@ -323,7 +323,7 @@ public class Translate {
 	Label block = new Label();
 	Label increment = new Label(); 
 	Label test = new Label();
-	i.home.frame.FP()
+
 	
 	return new Nx(SEQ(
 					  SEQ(

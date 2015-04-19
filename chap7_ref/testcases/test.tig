@@ -1,7 +1,2 @@
-let
-    var n := 2
-in
-    while n < 2
-    do n := 2
-end
+if 1 then 2 else 3
 
