@@ -251,8 +251,29 @@ public class Translate {
   }
 
   public Exp RecordExp(ExpList init) {
-	  System.out.println("RecordExp"); 
-    return Error();
+	  
+	  int numVar = 0; 
+	  for(ExpList e = init; e != null; e = e.tail){
+		  numVar++; 
+	  }
+	  
+	  Temp recAddress = new Temp();
+	  Tree.Stm allocRec = MOVE(TEMP(recAddress), frame.externalCall("allocRecord", ExpList(CONST(numVar))));
+	   
+	  return new Ex(ESEQ(SEQ(allocRec, recList(init, 0, recAddress)), TEMP(recAddress)));
+  }
+
+  private Tree.Stm recList(ExpList l, int offset, Temp loc){
+	  if(l == null){
+		  return NilExp().unNx();
+	  }
+	  if(l.head == null){
+		  return null;
+	  }
+	  if(l.tail == null){
+		  return SEQ(MOVE(MEM(BINOP(Absyn.OpExp.PLUS, TEMP(loc), CONST(offset))), l.head.unEx()), null); 
+	  }
+	  return SEQ(MOVE(MEM(BINOP(Absyn.OpExp.PLUS, TEMP(loc), CONST(offset))), l.head.unEx()), recList(l.tail, offset+frame.wordSize(), loc));
   }
 
   public Exp SeqExp(ExpList e) {
