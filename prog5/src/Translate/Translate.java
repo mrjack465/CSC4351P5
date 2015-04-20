@@ -121,8 +121,22 @@ public class Translate {
   }
 
   public Exp FieldVar(Exp record, int index) {
-	  System.out.println("FieldVar"); 
-    return Error();
+	  Temp t4 = new Temp();
+	  Label l0 = new Label();
+	  return new 
+			  Ex
+			  (
+					  ESEQ(
+							  SEQ(
+									  MOVE(TEMP(t4), record.unEx()), 
+									  SEQ(
+											  CJUMP(CJUMP.EQ, TEMP(t4), CONST(0), frame.badPtr(), l0), 
+											  LABEL(l0)
+											  )
+									  ), 
+									  MEM(BINOP(Absyn.OpExp.PLUS, TEMP(t4), CONST(index*frame.wordSize())))
+							  )
+					  );
   }
 
   public Exp SubscriptVar(Exp array, Exp index) {
@@ -173,12 +187,21 @@ public class Translate {
   }
 
   private Tree.Exp CallExp(Symbol f, ExpList args, Level from) {
-    return frame.externalCall(f.toString(), ExpList(args));
+	 return frame.externalCall(f.toString(), ExpList(args));
   }
-  
+    
   private Tree.Exp CallExp(Level f, ExpList args, Level from) {
-    throw new Error("Translate.CallExp unimplemented");
-  }
+	    Tree.Exp fp = TEMP(from.frame.FP());
+	    if (from != f.parent) {
+	      Level lev = from; 
+	      while(lev != f.parent) {
+	        fp = lev.frame.formals.head.exp(fp);
+	        lev = lev.parent;
+	      }
+	    }
+	    System.out.println(f.frame.name); 
+	    return CALL(NAME(f.frame.name), ExpList(fp, ExpList(args)));
+	  }
 
   public Exp FunExp(Symbol f, ExpList args, Level from) {
     return new Ex(CallExp(f, args, from));
@@ -219,6 +242,7 @@ public class Translate {
 	  case Absyn.OpExp.GE:
 		  return new RelCx(CJUMP.GE, left.unEx(), right.unEx());
 	  default:
+		  System.out.println("BINOP Error"); 
 		  return Error();
 	  }
   }
@@ -246,6 +270,7 @@ public class Translate {
 	  case Absyn.OpExp.GE:
 		  return new RelCx(CJUMP.GE, left.unEx(), right.unEx());
 	  default:
+		  System.out.println("StrOp Error"); 
 		  return Error();
   	  }
   }
@@ -271,9 +296,9 @@ public class Translate {
 		  return null;
 	  }
 	  if(l.tail == null){
-		  return SEQ(MOVE(MEM(BINOP(Absyn.OpExp.PLUS, TEMP(loc), CONST(offset))), l.head.unEx()), null); 
+		  return SEQ(MOVE(MEM(BINOP(Absyn.OpExp.PLUS, TEMP(loc), CONST(offset))), (l.head instanceof Nx) ? CONST(0) : l.head.unEx()), null); 
 	  }
-	  return SEQ(MOVE(MEM(BINOP(Absyn.OpExp.PLUS, TEMP(loc), CONST(offset))), l.head.unEx()), recList(l.tail, offset+frame.wordSize(), loc));
+	  return SEQ(MOVE(MEM(BINOP(Absyn.OpExp.PLUS, TEMP(loc), CONST(offset))), (l.head instanceof Nx) ? CONST(0) : l.head.unEx()), recList(l.tail, offset+frame.wordSize(), loc));
   }
 
   public Exp SeqExp(ExpList e) {

@@ -1,10 +1,30 @@
+let 
 
-let
+ type any = {any : int}
+ var buffer := getchar()
 
-type intList = {x1: int}
+function readint(any: any) : int =
+ let 
+    var i := 0
+     function isdigit(s : string) : int = 
+          ord(buffer)>=ord("0") & ord(buffer)<=ord("9")
+  in 
+     i
+ end
 
-var lst := intList{x1 = 0}
 
-in
-    lst.x1 = 3
+
+
+
+
+
+
+
+
+
+
+  /* BODY OF MAIN PROGRAM */
+ in 
 end
+
+    
